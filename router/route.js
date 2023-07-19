@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const jwtHelper = require("../utils/jwtHelper.js");
 const fs = require("fs");
 const path = require("path");
 
@@ -25,7 +26,7 @@ const allRoutesFiles = getAllFiles(dirPath);
 // Import all routes
 allRoutesFiles.map((file) => {
   const route = require(file);
-  app[route.method](route.route, route.controller);
+  app[route.method](route.route, jwtHelper.verifyJwtToken, route.controller);
 });
 
 module.exports = app;

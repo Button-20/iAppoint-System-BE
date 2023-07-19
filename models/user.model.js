@@ -27,6 +27,7 @@ const userSchema = new Schema(
     },
     profile_picture: {
       type: String,
+      default: "",
     },
     isLoggedIn: {
       type: Boolean,

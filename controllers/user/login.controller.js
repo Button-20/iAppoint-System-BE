@@ -5,7 +5,8 @@ const generateToken = require("../../utils/generateToken");
 async function login(req, res) {
   return await new Promise(async (resolve, reject) => {
     try {
-      const { firstname, lastname, email, phone, authMethod } = req.body;
+      const { firstname, lastname, email, phone, authMethod, profile_picture } =
+        req.body;
 
       // Check if user email or phone already exists
       let user = await User.findOne({
@@ -32,6 +33,7 @@ async function login(req, res) {
               lastname,
               email,
               authMethod,
+              profile_picture,
               isLoggedIn: true,
             });
             break;
