@@ -33,6 +33,10 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    online: {
+      type: Boolean,
+      default: false,
+    },
     authMethod: {
       type: String,
       enum: ["local", "google", "facebook"],

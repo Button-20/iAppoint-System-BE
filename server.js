@@ -18,6 +18,9 @@ const routes = require("./router/route.js");
 app.use("/api", routes);
 
 // Start server on port
-app.listen(PORT, () => {
+let server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Socket.io
+const io = require("./config/socket.config.js").socketConfig(server);
