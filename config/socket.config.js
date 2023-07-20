@@ -19,20 +19,37 @@ function socketConfig(server) {
     userSocket = socket;
 
     socket.on("join", async (data) => {
+      console.log("User joined:", data._id);
       const user = await User.findOne({ _id: data._id });
-      if (!user) {
+      if (!user)
         return socket.emit("error", {
           message: "User not found",
         });
-      }
+
       user.online = true;
+      await user.save();
       connectedUsers[data._id] = socket.id;
       socket.join(data._id);
       console.log("User joined:", data._id);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       console.log("Socket disconnected");
+
+      for (const userId in connectedUsers) {
+        if (connectedUsers[userId] === socket.id) {
+          delete connectedUsers[userId];
+          let user = await User.findOne({ _id: userId });
+          if (!user)
+            return socket.emit("error", {
+              message: "User not found",
+            });
+
+          user.online = false;
+          await user.save();
+          break;
+        }
+      }
     });
   });
 }
