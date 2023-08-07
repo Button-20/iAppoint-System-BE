@@ -6,21 +6,13 @@ async function getUsersByOrganisation(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const user = await User.aggregate({
-      $match: {
-        organisation: req.organisation,
-      },
-      $or: [
-        { fullname: { $regex: req.query.search, $options: "i" } },
-        { email: { $regex: req.query.search, $options: "i" } },
-      ],
-      $where: function () {
-        return this.role !== "admin";
-      },
+    const user = await User.find({
+      organisation: req.organisation,
+      role: { $ne: "super_admin" },
     })
-      .populate("organisation", "name")
-      .skip((req.query.page - 1) * req.query.itemsPerPage)
-      .limit(req.query.itemsPerPage);
+      .populate("organisation")
+      .skip((Number(req.query.page) - 1) * Number(req.query.itemsPerPage))
+      .limit(Number(req.query.itemsPerPage));
 
     if (!user) {
       return res.status(404).json({ message: "😥 Users not found!!" });
@@ -47,7 +39,7 @@ module.exports = {
 
 /**
  * @swagger
- * /api/users:
+ * /api/staff:
  *   get:
  *     summary: Get a list of users
  *     tags:

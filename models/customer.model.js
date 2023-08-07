@@ -11,13 +11,15 @@ const customerSchema = new Schema(
       type: String,
       require: true,
     },
-    phone: [
-      {
-        type: String,
-        require: true,
-        unique: true,
-      },
-    ],
+    phone: {
+      type: String,
+      require: true,
+      unique: true,
+    },
+    phone_alt: {
+      type: String,
+      default: "",
+    },
     picture: {
       type: String,
       default: "",

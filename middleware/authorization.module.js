@@ -8,14 +8,13 @@ async function AdminPermissionsOnly(req, res, next) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const user = new User({ id });
-    const result = await user.findById();
+    const user = await User.findById({ _id: id });
 
-    if (!result) {
+    if (!user) {
       return res.status(404).json({ message: "😥 User not found!!" });
     }
 
-    if (result.role !== "super_admin") {
+    if (user.role !== "super_admin") {
       return res.status(403).json({ message: "😥 You are not an admin!!" });
     }
 

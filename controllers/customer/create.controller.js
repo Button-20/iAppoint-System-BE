@@ -7,7 +7,7 @@ async function create(req, res) {
         return res.status(400).json({ message: "😒 Invalid request!!" });
       }
 
-      const { firstname, lastname, phone, dob } = req.body;
+      const { firstname, lastname, phone, dob, phone_alt } = req.body;
       if (!firstname && !lastname && !phone && !dob) {
         return reject(
           res.status(400).json({
@@ -15,7 +15,13 @@ async function create(req, res) {
           })
         );
       }
-      let customer = await Customer({ firstname, lastname, phone, dob });
+      let customer = await Customer({
+        firstname,
+        lastname,
+        phone,
+        dob,
+        phone_alt,
+      });
       await customer.save();
 
       return resolve(
@@ -35,7 +41,6 @@ module.exports = {
   route: "/customers/create",
   controller: [create],
 };
-
 
 /**
  * @swagger

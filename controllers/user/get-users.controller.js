@@ -10,16 +10,16 @@ async function getUsers(req, res) {
     }
 
     await AdminPermissionsOnly(req, res, async () => {
-      const user = await User.find({
+      const user = await User.aggregate({
         $or: [
           { fullname: { $regex: req.query.search || "", $options: "i" } },
           { email: { $regex: req.query.search || "", $options: "i" } },
         ],
-        $where: function () {
-          return this.role !== "admin";
+        $match: { role: { $ne: "admin" } },
+        $project: {
+          password: 0,
         },
       })
-        .select("-password")
         .sort({
           [(req.query.sortBy || "createdAt").toString()]:
             req.query.order || "DESC",
@@ -27,7 +27,7 @@ async function getUsers(req, res) {
         .skip((Number(req.query.page) - 1) * Number(req.query.itemsPerPage))
         .limit(Number(req.query.itemsPerPage));
 
-      if (!result) {
+      if (!user) {
         return res.status(404).json({ message: "😥 Users not found!!" });
       }
 

@@ -34,13 +34,13 @@ async function create(req, res) {
 
 module.exports = {
   method: "post",
-  route: "/appointments/create",
+  route: "/appointments",
   controller: [create],
 };
 
 /**
  * @swagger
- * /appointments/create:
+ * /appointments:
  *   post:
  *     summary: Create a new appointment
  *     tags:
