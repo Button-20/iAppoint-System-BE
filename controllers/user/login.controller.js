@@ -1,96 +1,98 @@
 const User = require("../../models/user.model");
-const firebase = require("../../config/firebase.config");
 const generateToken = require("../../utils/generateToken");
 
 async function login(req, res) {
-  return await new Promise(async (resolve, reject) => {
-    try {
-      const { firstname, lastname, email, phone, authMethod, profile_picture } =
-        req.body;
+  try {
+    const { email, password } = req.body;
 
-      // Check if user email or phone already exists
-      let user = await User.findOne({
-        $or: [{ email }, { phone }],
-      });
-
-      if (!user) {
-        switch (authMethod) {
-          case "local":
-            if (!firstname || !lastname || !phone)
-              return resolve(
-                res.status(400).json({ message: "Missing required fields" })
-              );
-            user = new User({
-              firstname,
-              lastname,
-              phone,
-              authMethod,
-            });
-            break;
-          case "google" || "facebook":
-            user = new User({
-              firstname,
-              lastname,
-              email,
-              authMethod,
-              profile_picture,
-              isLoggedIn: true,
-            });
-            break;
-          default:
-            return resolve(
-              res.status(400).json({ message: "Invalid auth method" })
-            );
-        }
-        await user.save();
-
-        // Generate token
-        if (authMethod !== "local") {
-          const token = generateToken(user);
-          return resolve(
-            res.status(200).json({ message: "User created", token })
-          );
-        }
-
-        return resolve(res.status(200).json({ message: "User created" }));
-      }
-
-      if (user) {
-        // Generate token
-        if (authMethod !== "local") {
-          const token = generateToken(user);
-          return resolve(
-            res.status(200).json({ message: "User logged in", token })
-          );
-        }
-
-        // Confirm signin with OTP from firebase
-        const confirmationResult = await firebase
-          .auth()
-          .getUserByPhoneNumber(phone);
-
-        if (!confirmationResult?.metadata?.lastSignInTime)
-          return resolve(
-            res.status(400).json({ message: "Phone number is not verified" })
-          );
-
-        user.isLoggedIn = true;
-        await user.save();
-        return resolve(
-          res
-            .status(200)
-            .json({ message: "User logged in", token: generateToken(user) })
-        );
-      }
-    } catch (error) {
-      console.error(error);
-      return reject(res.status(500).json({ message: "Internal server error" }));
+    if (!email && !password) {
+      return res
+        .status(400)
+        .json({ message: "🤔 Email and password are required!!" });
     }
-  });
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "😥 User not found!!" });
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "😥 Invalid credentials!!" });
+    }
+
+    const token = generateToken(user);
+
+    return res
+      .status(200)
+      .json({ message: "🎉 User logged in successfully!!", token, data: user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "😥 Internal server error!!" });
+  }
 }
 
 module.exports = {
   method: "post",
   route: "/login",
-  controller: login,
+  controller: [login],
 };
+
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login user and generate authentication token
+ *     tags:
+ *       - Authentication
+ *     requestBody:
+ *       description: User object for login
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Bad request - Email and password are required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ */

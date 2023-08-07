@@ -1,12 +1,18 @@
 const mongoose = require("mongoose");
 
-try {
-  mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  require("./user.model.js");
-  console.log("MongoDB connection established");
-} catch (error) {
-  console.error("Error establishing MongoDB connection:", error);
+async function connectToDB() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("🎉 Connected to MongoDB!!");
+  } catch (error) {
+    console.log("😥 Error connecting to MongoDB!!");
+    console.log(error);
+  }
 }
+
+require("./user.model.js");
+
+module.exports = connectToDB;

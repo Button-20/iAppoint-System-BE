@@ -1,10 +1,10 @@
 require("dotenv").config();
-require("./models/db.js");
+const mongoDB = require("./models/db.js");
 
 const helmet = require("helmet");
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
@@ -18,9 +18,11 @@ const routes = require("./router/route.js");
 app.use("/api", routes);
 
 // Start server on port
-let server = app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  // Connect to MongoDB
+  await mongoDB();
 });
 
-// Socket.io
-const io = require("./config/socket.config.js").socketConfig(server);
+// Start swagger docs
+require("./config/swagger.config.js")(app, PORT);
