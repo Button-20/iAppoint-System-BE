@@ -53,7 +53,7 @@ module.exports = {
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     summary: Get a list of users
  *     tags:

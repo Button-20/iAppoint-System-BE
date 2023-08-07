@@ -29,7 +29,7 @@ module.exports = {
 
 /**
  * @swagger
- * /customers/{id}:
+ * /api/customers/{id}:
  *   delete:
  *     summary: Delete a customer
  *     tags:

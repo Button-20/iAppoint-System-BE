@@ -44,3 +44,77 @@ module.exports = {
   route: "/customers",
   controller: [getCustomers],
 };
+
+/**
+ * @swagger
+ * /api/customers:
+ *   get:
+ *     summary: Get a list of customers
+ *     tags:
+ *       - Customers
+ *     parameters:
+ *       - name: page
+ *         in: query
+ *         description: The page number for pagination
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           default: 1
+ *       - name: limit
+ *         in: query
+ *         description: The number of items to return per page
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 100
+ *           default: 10
+ *       - name: search
+ *         in: query
+ *         description: Search query to filter customers by firstname or lastname
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Customers fetched successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 itemsPerPage:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 totalItemsCount:
+ *                   type: integer
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Customers not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ */

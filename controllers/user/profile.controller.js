@@ -9,8 +9,7 @@ async function profile(req, res) {
         );
       }
 
-      let user = new User({ id: req.id });
-      user = await user.findById();
+      let user = await User.findById({ _id: req.id });
 
       if (!user) {
         return resolve(
@@ -43,7 +42,7 @@ module.exports = {
 
 /**
  * @swagger
- * /profile:
+ * /api/profile:
  *   get:
  *     summary: Get the user profile
  *     tags:

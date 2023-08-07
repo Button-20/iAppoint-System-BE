@@ -1,25 +1,33 @@
 const User = require("../../models/user.model");
+const mongoose = require("mongoose");
 
 async function register(req, res) {
   return await new Promise(async (resolve, reject) => {
     try {
-      const { fullname, password, email } = req.body;
+      const { fullname, password, email, organisation, phone, phone_alt } = req.body;
 
-      if (!fullname && !email && !password) {
+      if (!fullname && !email && !password && !organisation, !phone) {
         return reject(
           res.status(400).json({
-            message: "😒 fullname or email and password are required!!",
+            message: "😒 Fullname, email, password, organisation and phone are required!!",
           })
         );
       }
+
+      if (mongoose.Types.ObjectId.isValid(organisation) === false)
+        return reject(
+          res.status(400).json({ message: "😒 Invalid organisation id!!" })
+        );
 
       let user = new User({
         fullname,
         email,
         password,
-        picture: "https://picsum.photos/200",
+        organisation: new mongoose.Types.ObjectId(organisation),
+        phone,
+        phone_alt,
       });
-      await user.create();
+      await user.save();
 
       return resolve(
         res.status(200).json({ message: "🎉 User created successfully!!" })
@@ -41,7 +49,7 @@ module.exports = {
 
 /**
  * @swagger
- * /register:
+ * /api/register:
  *   post:
  *     summary: Create a new user
  *     tags:
@@ -58,6 +66,12 @@ module.exports = {
  *               email:
  *                 type: string
  *               password:
+ *                 type: string
+ *               organisation:
+ *                 type: string
+ *               phone:
+ *                 type: string  
+ *               phone_alt:
  *                 type: string
  *     responses:
  *       200:

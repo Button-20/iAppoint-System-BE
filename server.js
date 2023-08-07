@@ -19,9 +19,9 @@ app.use("/api", routes);
 
 // Start server on port
 app.listen(PORT, async () => {
-  console.log(`Server running on port ${PORT}`);
   // Connect to MongoDB
   await mongoDB();
+  console.log(`Server running on port ${PORT}`);
 });
 
 // Start swagger docs

@@ -39,7 +39,7 @@ module.exports = {
 
 /**
  * @swagger
- * /customers/create:
+ * /api/customers/create:
  *   post:
  *     summary: Create a new customer
  *     tags:

@@ -17,13 +17,15 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
-    phone: [
-      {
-        type: String,
-        required: true,
-        unique: true,
-      },
-    ],
+    phone: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone_alt: {
+      type: String,
+      default: "",
+    },
     picture: {
       type: String,
       default: "",
@@ -32,6 +34,7 @@ const userSchema = new Schema(
       type: String,
       enum: ["user", "super_admin"],
       required: true,
+      default: "user",
     },
     organisation: {
       type: mongoose.Schema.Types.ObjectId,
@@ -48,10 +51,10 @@ userSchema.pre("save", async function (next) {
     // generate a salt
     const salt = await bcrypt.genSalt(10);
     // generate a password hash (salt + hash)
-    const passwordHash = bcrypt.hash(this.password, salt);
+    const passwordHash = await bcrypt.hash(this.password, salt);
     // re-assign hashed version over original, plain text password
     this.password = passwordHash;
-  
+
     // picture url
     this.picture =
       "https://ui-avatars.com/api/?name=" + this.fullname.replace(" ", "+");

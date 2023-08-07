@@ -5,7 +5,7 @@ async function getCustomerById(req, res) {
     if (req.id === undefined) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
-    const customers = await Customer.findOne({ id: req.params.id });
+    const customers = await Customer.findOne({ _id: req.params.id });
 
     if (!customers) {
       return res.status(404).json({ message: "😥 Customer not found!!" });

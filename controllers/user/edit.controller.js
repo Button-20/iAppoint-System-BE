@@ -13,7 +13,11 @@ async function editUser(req, res) {
       });
     }
 
-    let user = await User.findOneAndUpdate({ id: req.params.id }, { fullname , phone });
+    let user = await User.findOneAndUpdate(
+      { id: req.params.id },
+      { fullname, phone },
+      { new: true }
+    );
 
     if (!user) {
       return res.status(404).json({ message: "😥 User not found!!" });
@@ -31,3 +35,67 @@ module.exports = {
   route: "/users/:id",
   controller: [editUser],
 };
+
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   put:
+ *     summary: Edit a user's information
+ *     tags:
+ *       - Users
+ *     security:
+ *       - jwt: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the user to edit
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               fullname:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *             required:
+ *               - fullname
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ */

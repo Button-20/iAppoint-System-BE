@@ -42,7 +42,7 @@ module.exports = {
 
 /**
  * @swagger
- * /login:
+ * /api/login:
  *   post:
  *     summary: Login user and generate authentication token
  *     tags:

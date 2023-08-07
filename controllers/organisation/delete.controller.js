@@ -26,3 +26,54 @@ module.exports = {
   route: "/organisations/:id",
   controller: [deleteOrganisation],
 };
+
+/**
+ * @swagger
+ * /api/organisations/{id}:
+ *   delete:
+ *     summary: Delete an organisation
+ *     tags:
+ *       - Organisations
+ *     security:
+ *       - jwt: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         description: The ID of the organisation to delete
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Organisation deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: Invalid request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Organisation not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               properties:
+ *                 message:
+ *                   type: string
+ */
