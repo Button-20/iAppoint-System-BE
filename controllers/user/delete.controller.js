@@ -16,7 +16,7 @@ async function deleteUser(req, res) {
           .json({ message: "😒 You can't delete yourself!!" });
       }
 
-      const user = await User.deleteOne({ id: req.params.id });
+      const user = await User.deleteOne({ _id: req.params.id });
 
       if (!user) {
         return res.status(404).json({ message: "😥 User not found!!" });
