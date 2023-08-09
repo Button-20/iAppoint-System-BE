@@ -1,14 +1,33 @@
+const { default: mongoose } = require("mongoose");
 const Customer = require("../../models/customer.model");
 
 async function deleteCustomer(req, res) {
   try {
-    if (req.id === undefined || req.params.id === undefined) {
+    if (
+      req.id === undefined ||
+      req.params.id === undefined ||
+      mongoose.Types.ObjectId.isValid(req.params.id) === false
+    ) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const customer = await Customer.deleteOne({ id: req.params.id });
+    const customer = await Customer.findById({ _id: req.params.id });
 
     if (!customer) {
+      return res.status(404).json({ message: "😥 Customer not found!!" });
+    }
+
+    if (customer.organisation.toString() !== req.organisation.toString()) {
+      return res
+        .status(400)
+        .json({ message: "😒 Cannot delete this customer!!" });
+    }
+
+    const deletedCustomer = await Customer.findByIdAndDelete({
+      _id: req.params.id,
+    });
+
+    if (!deletedCustomer) {
       return res.status(404).json({ message: "😥 Customer not found!!" });
     }
 

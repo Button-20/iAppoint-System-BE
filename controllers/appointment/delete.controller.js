@@ -6,7 +6,7 @@ async function deleteAppointment(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const appointment = await Appointment.deleteOne({ id: req.params.id });
+    const appointment = await Appointment.findByIdAndRemove({ _id: req.params.id });
 
     if (!appointment) {
       return res.status(404).json({ message: "😥 Appointment not found!!" });

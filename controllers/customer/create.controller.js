@@ -1,4 +1,6 @@
 const Customer = require("../../models/customer.model");
+const Organisation = require("../../models/organisation.model");
+const smsConfig = require("../../config/sms.config");
 
 async function create(req, res) {
   return await new Promise(async (resolve, reject) => {
@@ -7,8 +9,8 @@ async function create(req, res) {
         return res.status(400).json({ message: "😒 Invalid request!!" });
       }
 
-      const { firstname, lastname, phone, dob, phone_alt } = req.body;
-      if (!firstname && !lastname && !phone && !dob) {
+      const { firstname, lastname, phone, dob, email, phone_alt } = req.body;
+      if (!firstname && !lastname && !phone && !dob && !email) {
         return reject(
           res.status(400).json({
             message: "😒 Firstname, lastname, phone and dob are required!!",
@@ -18,11 +20,19 @@ async function create(req, res) {
       let customer = await Customer({
         firstname,
         lastname,
+        email,
         phone,
         dob,
         phone_alt,
+        organisation: req.organisation,
       });
       await customer.save();
+
+      let organisation = await Organisation.findById({ _id: req.organisation });
+
+      // send sms
+      const message = `Dear ${firstname} ${lastname},  We are glad to welcome you on board. Thank you for doing business with ${organisation.name}.`;
+      await smsConfig.sendSMS(phone, message);
 
       return resolve(
         res.status(200).json({ message: "🎉 Customer created successfully!!" })
@@ -38,13 +48,13 @@ async function create(req, res) {
 
 module.exports = {
   method: "post",
-  route: "/customers/create",
+  route: "/customers",
   controller: [create],
 };
 
 /**
  * @swagger
- * /api/customers/create:
+ * /api/customers:
  *   post:
  *     summary: Create a new customer
  *     tags:

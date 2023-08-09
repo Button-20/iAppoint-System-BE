@@ -10,15 +10,11 @@ async function getUsers(req, res) {
     }
 
     await AdminPermissionsOnly(req, res, async () => {
-      const user = await User.aggregate({
+      const user = await User.find({
         $or: [
           { fullname: { $regex: req.query.search || "", $options: "i" } },
           { email: { $regex: req.query.search || "", $options: "i" } },
         ],
-        $match: { role: { $ne: "admin" } },
-        $project: {
-          password: 0,
-        },
       })
         .sort({
           [(req.query.sortBy || "createdAt").toString()]:

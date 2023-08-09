@@ -6,8 +6,8 @@ async function editCustomer(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const { firstname, lastname, phone, dob } = req.body;
-    if (!firstname && !lastname && !phone && !dob) {
+    const { firstname, lastname, email, phone, dob, phone_alt } = req.body;
+    if (!firstname && !lastname && !phone && !dob && !email) {
       return res.status(400).json({
         message: "😒 Firstname, lastname, phone and dob are required!!",
       });
@@ -15,7 +15,7 @@ async function editCustomer(req, res) {
 
     let customer = await Customer.findOneAndUpdate(
       { id: req.params.id },
-      { firstname, lastname, phone, dob }
+      { firstname, lastname, email, phone, dob, phone_alt }
     );
 
     if (!customer) {

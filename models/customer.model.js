@@ -11,6 +11,11 @@ const customerSchema = new Schema(
       type: String,
       require: true,
     },
+    email: {
+      type: String,
+      unique: true,
+      require: true,
+    },
     phone: {
       type: String,
       require: true,

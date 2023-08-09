@@ -4,12 +4,14 @@ const mongoose = require("mongoose");
 async function register(req, res) {
   return await new Promise(async (resolve, reject) => {
     try {
-      const { fullname, password, email, organisation, phone, phone_alt } = req.body;
+      const { fullname, password, email, organisation, phone, phone_alt } =
+        req.body;
 
-      if (!fullname && !email && !password && !organisation, !phone) {
+      if ((!fullname && !email && !password && !organisation, !phone)) {
         return reject(
           res.status(400).json({
-            message: "😒 Fullname, email, password, organisation and phone are required!!",
+            message:
+              "😒 Fullname, email, password, organisation and phone are required!!",
           })
         );
       }
@@ -33,9 +35,10 @@ async function register(req, res) {
         res.status(200).json({ message: "🎉 User created successfully!!" })
       );
     } catch (error) {
-      console.log(error);
       return reject(
-        res.status(500).json({ message: "😥 Internal server error!!" })
+        error.code === 11000
+          ? res.status(400).json({ message: "😒 User already exists!!" })
+          : res.status(500).json({ message: "😥 Internal server error!!" })
       );
     }
   });
@@ -70,7 +73,7 @@ module.exports = {
  *               organisation:
  *                 type: string
  *               phone:
- *                 type: string  
+ *                 type: string
  *               phone_alt:
  *                 type: string
  *     responses:

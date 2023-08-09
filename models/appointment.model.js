@@ -3,10 +3,9 @@ const Schema = mongoose.Schema;
 
 const appointmentSchema = new Schema(
   {
-    date: {
+    appointment_date: {
       type: Date,
       required: true,
-      default: mongoose.now,
     },
     description: {
       type: String,
@@ -21,6 +20,16 @@ const appointmentSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    organisation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organisation",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "completed", "cancelled", "overdue"],
+      default: "pending",
     },
   },
   { timestamps: true }

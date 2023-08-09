@@ -1,22 +1,39 @@
 const Appointment = require("../../models/appointment.model");
+const Organisation = require("../../models/organisation.model");
+const Customer = require("../../models/customer.model");
+const smsConfig = require("../../config/sms.config");
 
 async function create(req, res) {
   return await new Promise(async (resolve, reject) => {
     try {
-      if (req.id === undefined) {
+      if (req.id === undefined || req.organisation === undefined) {
         return res.status(400).json({ message: "😒 Invalid request!!" });
       }
 
-      const { description, customer, user } = req.body;
-      if (!description && !customer && !user) {
+      const { description, customer, appointment_date } = req.body;
+      if (!description && !customer && !appointment_date) {
         return reject(
           res.status(400).json({
-            message: "😒 Description, customer and user are required!!",
+            message:
+              "😒 Description, customer and appointment date are required!!",
           })
         );
       }
-      let appointment = await Appointment({ description, customer, user });
+      let appointment = await Appointment({
+        description,
+        customer,
+        user: req.id,
+        appointment_date,
+        organisation: req.organisation,
+      });
       await appointment.save();
+
+      let organisation = await Organisation.findById({ _id: req.organisation });
+      let customerDetails = await Customer.findById({ _id: customer });
+      await smsConfig(
+        customerDetails.phone,
+        `Dear ${customerDetails.name}, your appointment with ${organisation.name} has been booked for ${appointment_date}. Thank you for doing business with us.`
+      );
 
       return resolve(
         res

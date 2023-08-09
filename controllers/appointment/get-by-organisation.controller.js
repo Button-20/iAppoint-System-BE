@@ -6,12 +6,9 @@ async function getAppointments(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
+    // Search for appointments by organisation, populate customer field and search by customer first name and last name
     const appointments = await Appointment.find({
       organisation: req.organisation,
-      $or: [
-        { "customer.firstname": { $regex: req.query.search, $options: "i" } }, // 'i' makes it case insensitive
-        { "customer.lastname": { $regex: req.query.search, $options: "i" } },
-      ],
     })
       .populate("customer")
       .skip(Number(req.query.page - 1) * Number(req.query.itemsPerPage))
@@ -19,6 +16,19 @@ async function getAppointments(req, res) {
 
     if (!appointments) {
       return res.status(404).json({ message: "😥 Appointments not found!!" });
+    }
+
+    if (req.query.search) {
+      appointments = appointments.filter((appointment) => {
+        return (
+          appointment.customer.firstname
+            .toLowerCase()
+            .includes(req.query.search.toLowerCase()) ||
+          appointment.customer.lastname
+            .toLowerCase()
+            .includes(req.query.search.toLowerCase())
+        );
+      });
     }
 
     return res.status(200).json({
