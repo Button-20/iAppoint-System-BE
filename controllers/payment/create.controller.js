@@ -1,5 +1,5 @@
 const Payment = require("../../models/payment.model");
-const paymentConfig = require("../../config/payment.config");
+// const paymentConfig = require("../../config/payment.config");
 
 async function createPayment(req, res) {
   return await new Promise(async (resolve, reject) => {
@@ -29,17 +29,17 @@ async function createPayment(req, res) {
 
       console.log(payment);
 
-      let transaction = await paymentConfig.createPayment({
-        _id: payment._id,
-        mobile_number: payment.mobile_number,
-        mobile_network: payment.mobile_network,
-        email: payment.user.email,
-        amount: payment.amount,
-        _id: payment._id,
-        subscription: payment.subscription.name,
-      });
+      // let transaction = await paymentConfig.createPayment({
+      //   _id: payment._id,
+      //   mobile_number: payment.mobile_number,
+      //   mobile_network: payment.mobile_network,
+      //   email: payment.user.email,
+      //   amount: payment.amount,
+      //   _id: payment._id,
+      //   subscription: payment.subscription.name,
+      // });
 
-      console.log(transaction);
+      // console.log(transaction);
 
       return resolve(
         res.status(200).json({ message: "🎉 Payment created successfully!!" })
