@@ -8,7 +8,7 @@ async function getAppointmentsTotal(req, res) {
 
     const appointments = await Appointment.countDocuments({
       organisation: req.organisation,
-    });
+    })
 
     if (!appointments) {
       return res.status(404).json({ message: "😥 Appointments not found!!" });

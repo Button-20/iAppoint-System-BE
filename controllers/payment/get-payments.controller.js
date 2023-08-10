@@ -6,7 +6,7 @@ async function getPayments(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const payments = await Payment.find({ organisation: req.organisation })
+    const payments = await Payment.find()
       .populate("subscription")
       .populate("user")
       .populate("organisation")

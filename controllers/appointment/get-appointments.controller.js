@@ -1,15 +1,16 @@
 const Appointment = require("../../models/appointment.model");
+const {
+  AdminPermissionsOnly,
+} = require("../../middleware/authorization.module");
 
 async function getAppointments(req, res) {
   try {
-    if (req.id === undefined || req.organisation === undefined) {
+    if (req.id === undefined) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
     // Search for appointments by organisation, populate customer field and search by customer first name and last name
-    const appointments = await Appointment.find({
-      organisation: req.organisation,
-    })
+    const appointments = await Appointment.find()
       .sort({ createdAt: -1 })
       .populate("customer")
       .skip(Number(req.query.page - 1) * Number(req.query.itemsPerPage))
@@ -47,6 +48,6 @@ async function getAppointments(req, res) {
 
 module.exports = {
   method: "get",
-  route: "/appointments-by-organisation",
-  controller: [getAppointments],
+  route: "/appointments",
+  controller: [AdminPermissionsOnly, getAppointments],
 };

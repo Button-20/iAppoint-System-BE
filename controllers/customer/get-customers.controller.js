@@ -1,4 +1,7 @@
 const Customer = require("../../models/customer.model");
+const {
+  AdminPermissionsOnly,
+} = require("../../middleware/authorization.module");
 
 async function getCustomers(req, res) {
   try {
@@ -36,7 +39,7 @@ async function getCustomers(req, res) {
 module.exports = {
   method: "get",
   route: "/customers",
-  controller: [getCustomers],
+  controller: [AdminPermissionsOnly, getCustomers],
 };
 
 /**
