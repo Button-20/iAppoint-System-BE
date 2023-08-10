@@ -31,3 +31,4 @@ require("./config/swagger.config.js")(app, PORT);
 // Start cron jobs
 require("./jobs/check-appointments.module.js")();
 require("./jobs/check-birthdays.module.js")();
+require("./jobs/check-payments.module.js")();

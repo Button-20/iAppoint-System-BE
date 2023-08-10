@@ -9,23 +9,19 @@ async function deleteUser(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    await AdminPermissionsOnly(req, res, async () => {
-      if (req.params.id === req.id) {
-        return res
-          .status(400)
-          .json({ message: "😒 You can't delete yourself!!" });
-      }
-
-      const user = await User.deleteOne({ _id: req.params.id });
-
-      if (!user) {
-        return res.status(404).json({ message: "😥 User not found!!" });
-      }
-
+    if (req.params.id === req.id) {
       return res
-        .status(200)
-        .json({ message: "🎉 User deleted successfully!!" });
-    });
+        .status(400)
+        .json({ message: "😒 You can't delete yourself!!" });
+    }
+
+    const user = await User.deleteOne({ _id: req.params.id });
+
+    if (!user) {
+      return res.status(404).json({ message: "😥 User not found!!" });
+    }
+
+    return res.status(200).json({ message: "🎉 User deleted successfully!!" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "😥 Internal server error!!" });
@@ -35,7 +31,7 @@ async function deleteUser(req, res) {
 module.exports = {
   method: "delete",
   route: "/users/:id",
-  controller: [deleteUser],
+  controller: [AdminPermissionsOnly, deleteUser],
 };
 
 /**

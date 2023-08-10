@@ -6,9 +6,9 @@ async function getCustomersByOrganisation(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const user = await Customer.find({
+    const customers = await Customer.find({
       organisation: req.organisation,
-      $or: [ 
+      $or: [
         { firstname: { $regex: req.query.search, $options: "i" } }, // 'i' makes it case insensitive
         { lastname: { $regex: req.query.search, $options: "i" } },
       ],
@@ -17,16 +17,16 @@ async function getCustomersByOrganisation(req, res) {
       .skip((Number(req.query.page) - 1) * Number(req.query.itemsPerPage))
       .limit(Number(req.query.itemsPerPage));
 
-    if (!user) {
+    if (!customers) {
       return res.status(404).json({ message: "😥 Customers not found!!" });
     }
 
     return res.status(200).json({
       message: "🎉 Customers fetched successfully!!",
-      data: user,
+      data: customers,
       itemsPerPage: req.query.itemsPerPage || 10,
       page: req.query.page || 1,
-      totalItemsCount: user.length,
+      totalItemsCount: customers.length,
     });
   } catch (error) {
     console.log(error);
