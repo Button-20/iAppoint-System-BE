@@ -19,6 +19,11 @@ const subscriptionSchema = new Schema(
       type: Number,
       required: true,
     },
+    durationType: {
+      type: String,
+      required: true,
+      enum: ["day", "week", "month", "year"],
+    },
   },
   { timestamps: true }
 );

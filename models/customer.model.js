@@ -25,9 +25,10 @@ const customerSchema = new Schema(
       type: String,
       default: "",
     },
-    picture: {
+    gender: {
       type: String,
-      default: "",
+      require: true,
+      enum: ["male", "female", "other"],
     },
     dob: {
       type: Date,

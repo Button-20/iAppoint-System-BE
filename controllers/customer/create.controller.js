@@ -9,11 +9,11 @@ async function create(req, res) {
         return res.status(400).json({ message: "😒 Invalid request!!" });
       }
 
-      const { firstname, lastname, phone, dob, email, phone_alt } = req.body;
-      if (!firstname && !lastname && !phone && !dob && !email) {
+      const { firstname, lastname, phone, gender, dob, email, phone_alt } = req.body;
+      if (!firstname && !lastname && !phone && !gender && !dob && !email) {
         return reject(
           res.status(400).json({
-            message: "😒 Firstname, lastname, phone and dob are required!!",
+            message: "😒 Firstname, lastname, phone, gender and dob are required!!",
           })
         );
       }
@@ -22,6 +22,7 @@ async function create(req, res) {
         lastname,
         email,
         phone,
+        gender,
         dob,
         phone_alt,
         organisation: req.organisation,
