@@ -14,7 +14,7 @@ async function editCustomer(req, res) {
     }
 
     let customer = await Customer.findOneAndUpdate(
-      { id: req.params.id },
+      { _id: req.params.id },
       { firstname, lastname, email, phone, gender, dob, phone_alt }
     );
 

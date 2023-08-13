@@ -14,7 +14,7 @@ async function editAppointment(req, res) {
     }
 
     let appointment = await Appointment.findOneAndUpdate(
-      { id: req.params.id },
+      { _id: req.params.id },
       { date, description, customer, user }
     );
 

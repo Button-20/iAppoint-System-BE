@@ -14,7 +14,7 @@ async function editUser(req, res) {
     }
 
     let user = await User.findOneAndUpdate(
-      { id: req.params.id },
+      { _id: req.params.id },
       { fullname, phone },
       { new: true }
     );

@@ -36,7 +36,7 @@ async function create(req, res) {
       return resolve(
         res
           .status(200)
-          .json({ message: "🎉 Appointment created successfully!!" })
+          .json({ message: "🎉 Ticket created successfully!!" })
       );
     } catch (error) {
       console.log(error);

@@ -13,8 +13,9 @@ async function editTicket(req, res) {
       });
 
     let ticket = await Ticket.findOneAndUpdate(
-      { id: req.params.id },
-      { description, title, status }
+      { _id: req.params.id },
+      { description, title, status },
+      { new: true }
     );
 
     if (!ticket) {
