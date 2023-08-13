@@ -1,5 +1,4 @@
 const Ticket = require("../../models/ticket.model");
-const Customer = require("../../models/customer.model");
 const smsConfig = require("../../config/sms.config");
 
 async function create(req, res) {
@@ -26,17 +25,19 @@ async function create(req, res) {
         organisation: req.organisation,
       });
       appointment = await appointment.save();
+      appointment = await appointment.populate("customer")
 
-      let customerDetails = await Customer.findById({ _id: customer });
       await smsConfig(
-        customerDetails.phone,
-        `Dear ${customerDetails.name}, your complain is receiving attention with a ticket no. #${appointment._id}`
+        appointment.customer.phone,
+        `Dear ${
+          appointment.customer.firstname + " " + appointment.customer.lastname
+        }, your complain is receiving attention with a ticket no. #${appointment._id
+          .toString()
+          .slice(-8)}`
       );
 
       return resolve(
-        res
-          .status(200)
-          .json({ message: "🎉 Ticket created successfully!!" })
+        res.status(200).json({ message: "🎉 Ticket created successfully!!" })
       );
     } catch (error) {
       console.log(error);
