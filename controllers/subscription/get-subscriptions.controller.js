@@ -1,7 +1,4 @@
 const Subscription = require("../../models/subscription.model");
-const {
-  AdminPermissionsOnly,
-} = require("../../middleware/authorization.module");
 
 async function getSuscriptions(req, res) {
   try {
@@ -22,5 +19,5 @@ async function getSuscriptions(req, res) {
 module.exports = {
   method: "get",
   route: "/subscriptions",
-  controller: [AdminPermissionsOnly, getSuscriptions],
+  controller: [getSuscriptions],
 };
