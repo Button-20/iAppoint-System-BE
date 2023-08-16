@@ -19,5 +19,5 @@ async function getSuscriptions(req, res) {
 module.exports = {
   method: "get",
   route: "/subscriptions",
-  controller: [getSuscriptions],
+  controller: getSuscriptions],
 };
