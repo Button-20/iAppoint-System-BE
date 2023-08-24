@@ -21,6 +21,10 @@ const customerSchema = new Schema(
       require: true,
       unique: true,
     },
+    picture: {
+      type: String,
+      default: "",
+    },
     phone_alt: {
       type: String,
       default: "",

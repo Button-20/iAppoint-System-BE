@@ -3,48 +3,45 @@ const Organisation = require("../../models/organisation.model");
 const smsConfig = require("../../config/sms.config");
 
 async function create(req, res) {
-  return await new Promise(async (resolve, reject) => {
-    try {
-      if (req.id === undefined) {
-        return res.status(400).json({ message: "😒 Invalid request!!" });
-      }
-
-      const { firstname, lastname, phone, gender, dob, email, phone_alt } = req.body;
-      if (!firstname && !lastname && !phone && !gender && !dob && !email) {
-        return reject(
-          res.status(400).json({
-            message: "😒 Firstname, lastname, phone, gender and dob are required!!",
-          })
-        );
-      }
-      let customer = await Customer({
-        firstname,
-        lastname,
-        email,
-        phone,
-        gender,
-        dob,
-        phone_alt,
-        organisation: req.organisation,
-      });
-      await customer.save();
-
-      let organisation = await Organisation.findById({ _id: req.organisation });
-
-      // send sms
-      const message = `Dear ${firstname} ${lastname},  We are glad to welcome you on board. Thank you for doing business with ${organisation.name}.`;
-      await smsConfig.sendSMS(phone, message);
-
-      return resolve(
-        res.status(200).json({ message: "🎉 Customer created successfully!!" })
-      );
-    } catch (error) {
-      console.log(error);
-      return reject(
-        res.status(500).json({ message: "😥 Internal server error!!" })
-      );
+  try {
+    if (req.id === undefined) {
+      return res.status(400).json({ message: "😒 Invalid request!!" });
     }
-  });
+
+    const { firstname, lastname, phone, gender, dob, email, phone_alt } =
+      req.body;
+    if (!firstname && !lastname && !phone && !gender && !dob && !email) {
+      return res.status(400).json({
+        message: "😒 Firstname, lastname, phone, gender and dob are required!!",
+      });
+    }
+    let customer = await Customer({
+      firstname,
+      lastname,
+      email,
+      phone,
+      gender,
+      dob,
+      phone_alt,
+      organisation: req.organisation,
+    });
+    await customer.save();
+
+    let organisation = await Organisation.findById({ _id: req.organisation });
+
+    // send sms
+    const message = `Dear ${firstname} ${lastname},  We are glad to welcome you on board. Thank you for doing business with ${organisation.name}.`;
+    await smsConfig(phone, message);
+
+    return res
+      .status(200)
+      .json({ message: "🎉 Customer created successfully!!" });
+  } catch (error) {
+    console.log(error);
+    return error.code === 11000
+      ? res.status(400).json({ message: "😒 Customer phone already exist!!" })
+      : res.status(500).json({ message: "😥 Internal server error!!" });
+  }
 }
 
 module.exports = {
