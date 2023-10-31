@@ -6,7 +6,11 @@ async function getOrganisations(req, res) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const organisations = await Organisation.find();
+    let { search } = req.query;
+
+    const organisations = await Organisation.find({
+      name: { $regex: search, $options: "i" },
+    });
 
     if (!organisations) {
       return res.status(404).json({ message: "😥 Organisations not found!!" });

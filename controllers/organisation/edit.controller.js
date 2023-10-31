@@ -1,12 +1,22 @@
 const Organisation = require("../../models/organisation.model");
 
-async function deleteOrganisation(req, res) {
+async function editOrganisation(req, res) {
   try {
-    if (req.id === undefined || req.params.id === undefined) {
+    if (req.id === undefined) {
       return res.status(400).json({ message: "😒 Invalid request!!" });
     }
 
-    const organisation = await Organisation.deleteOne({ _id: req.params.id });
+    const { name } = req.body;
+    if (!name) {
+      return res.status(400).json({
+        message: "😒 Name is required!!",
+      });
+    }
+
+    let organisation = await Organisation.findOneAndUpdate(
+      { _id: req.params.id },
+      { name }
+    );
 
     if (!organisation) {
       return res.status(404).json({ message: "😥 Organisation not found!!" });
@@ -14,7 +24,7 @@ async function deleteOrganisation(req, res) {
 
     return res
       .status(200)
-      .json({ message: "🎉 Organisation deleted successfully!!" });
+      .json({ message: "🎉 Organisation updated successfully!!" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "😥 Internal server error!!" });
@@ -22,30 +32,46 @@ async function deleteOrganisation(req, res) {
 }
 
 module.exports = {
-  method: "delete",
+  method: "put",
   route: "/organisations/:id",
-  controller: [deleteOrganisation],
+  controller: [editOrganisation],
 };
 
 /**
  * @swagger
- * /api/organisations/{id}:
- *   delete:
- *     summary: Delete an organisation
+ * /organisations/{id}:
+ *   put:
+ *     summary: Edit an organisation
  *     tags:
  *       - Organisations
- *     security:
- *       - jwt: []
  *     parameters:
  *       - name: id
  *         in: path
- *         description: The ID of the organisation to delete
+ *         description: The ID of the organisation to edit
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 format: date-time
+ *               description:
+ *                 type: string
+ *               customer:
+ *                 type: string
+ *                 description: The ID of the associated customer
+ *               user:
+ *                 type: string
+ *                 description: The ID of the associated user
  *     responses:
  *       200:
- *         description: Organisation deleted successfully
+ *         description: Organisation updated successfully
  *         content:
  *           application/json:
  *             schema:

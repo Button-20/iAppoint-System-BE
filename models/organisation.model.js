@@ -26,6 +26,19 @@ organisationSchema.pre("save", async function (next) {
   }
 });
 
+
+// Update image url on update
+organisationSchema.pre("findOneAndUpdate", async function (next) {
+  try {
+    // picture url
+    this._update.picture =
+      "https://ui-avatars.com/api/?name=" + this._update.name.replace(" ", "+");
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = mongoose.model("Organisation", organisationSchema);
 
 /**
