@@ -17,6 +17,8 @@ async function getCustomersTotal(req, res) {
     const totalCustomers = await Customer.aggregate([
       {
         $match: { organisation: req.organisation },
+      },
+      {
         $group: {
           _id: {
             $dateToString: { format: "%Y-%m", date: "$createdAt" },
@@ -32,7 +34,6 @@ async function getCustomersTotal(req, res) {
         },
       },
     ]);
-
     let months = Array.from({ length: 12 }, () => 0).map((_, i) => {
       return i + 1;
     });
