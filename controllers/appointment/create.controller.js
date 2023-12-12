@@ -31,9 +31,14 @@ async function create(req, res) {
       Customer.findById(customer),
     ]);
 
+    // convert date to string (dd/mm/yyyy)
+    const date = new Intl.DateTimeFormat("en-GB").format(
+      new Date(appointment_date)
+    );
+
     await smsConfig(
       customerDetails.phone,
-      `Dear ${customerDetails.firstname}, your next appointment date is booked for ${appointment_date}. Thank you for doing business with ${organisation.name}.`
+      `Hi ${customerDetails.firstname}, Just a friendly reminder that your next appointment at ${organisation.name} is on ${date}. We're looking forward to seeing you soon.`
     );
 
     return res

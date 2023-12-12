@@ -10,10 +10,6 @@ async function getCustomersTotal(req, res) {
       organisation: req.organisation,
     });
 
-    if (!customers) {
-      return res.status(404).json({ message: "😥 No Customers not found!!" });
-    }
-
     const totalCustomers = await Customer.aggregate([
       {
         $match: { organisation: req.organisation },

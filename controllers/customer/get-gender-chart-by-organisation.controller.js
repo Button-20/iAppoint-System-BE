@@ -86,7 +86,7 @@ async function getGenderChart(req, res) {
       data,
     });
   } catch (ex) {
-    console.log(error);
+    console.log(ex);
     return res.status(500).json({ message: "😥 Internal server error!!" });
   }
 }
