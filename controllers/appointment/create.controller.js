@@ -38,7 +38,7 @@ async function create(req, res) {
 
     await smsConfig(
       customerDetails.phone,
-      `Hi ${customerDetails.firstname}, Just a friendly reminder that your next appointment at ${organisation.name} is on ${date}. We're looking forward to seeing you soon.`
+      `Hello ${customerDetails.firstname}, Just a friendly reminder that your next appointment at ${organisation.name} is on ${date}. We're looking forward to seeing you soon.`
     );
 
     return res

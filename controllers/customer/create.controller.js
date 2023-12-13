@@ -30,7 +30,7 @@ async function create(req, res) {
     let organisation = await Organisation.findById({ _id: req.organisation });
 
     // send sms
-    const message = `Hey ${firstname} ${lastname}, , welcome to the ${organisation.name} family!  We're thrilled to have you join us and excited to help you find the perfect eyewear to enhance your vision and style. For further information please call 0544257189 or 0243424984.`;
+    const message = `Hello ${firstname} ${lastname}, , welcome to the ${organisation.name} family!  We're thrilled to have you join us and excited to help you find the perfect eyewear to enhance your vision and style. For further information please call 0544257189 or 0243424984.`;
     await smsConfig(phone, message);
 
     return res
