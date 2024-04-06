@@ -134,7 +134,7 @@ async function getCustomersTotal(req, res) {
         labels: {
           show: false,
           formatter: function (val) {
-            return val + "%";
+            return Math.round(val) + "%";
           },
         },
       },

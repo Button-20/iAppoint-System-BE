@@ -40,7 +40,7 @@ async function getGenderChart(req, res) {
               show: true,
               label: "Total",
               formatter: function (w) {
-                return males + females + others;
+                return Math.round(males + females + others);
               },
             },
           },
