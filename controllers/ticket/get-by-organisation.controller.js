@@ -32,12 +32,21 @@ async function getTickets(req, res) {
       });
     }
 
+    // Get total number of tickets
+    const totalTickets = await Ticket.countDocuments({
+      organisation: req.organisation,
+    });
+
+    if (!totalTickets) {
+      return res.status(404).json({ message: "😥 Tickets not found!!" });
+    }
+
     return res.status(200).json({
       message: "🎉 Tickets fetched successfully!!",
       data: tickets,
       itemsPerPage: req.query.itemsPerPage || 10,
       page: req.query.page || 1,
-      totalItemsCount: tickets.length,
+      totalItemsCount: req.query.search ? tickets.length : totalTickets,
     });
   } catch (error) {
     console.log(error);

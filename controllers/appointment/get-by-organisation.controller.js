@@ -32,6 +32,10 @@ async function getAppointments(req, res) {
       });
     }
 
+    if (!appointments) {
+      return res.status(404).json({ message: "😥 Appointments not found!!" });
+    }
+
     return res.status(200).json({
       message: "🎉 Appointments fetched successfully!!",
       data: appointments,

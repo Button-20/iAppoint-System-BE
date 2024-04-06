@@ -21,12 +21,25 @@ async function getCustomersByOrganisation(req, res) {
       return res.status(404).json({ message: "😥 Customers not found!!" });
     }
 
+    // Get total number of customers
+    const totalCustomers = await Customer.countDocuments({
+      organisation: req.organisation,
+      $or: [
+        { firstname: { $regex: req.query.search, $options: "i" } }, // 'i' makes it case insensitive
+        { lastname: { $regex: req.query.search, $options: "i" } },
+      ],
+    });
+
+    if (!totalCustomers) {
+      return res.status(404).json({ message: "😥 Customers not found!!" });
+    }
+
     return res.status(200).json({
       message: "🎉 Customers fetched successfully!!",
       data: customers,
       itemsPerPage: req.query.itemsPerPage || 10,
       page: req.query.page || 1,
-      totalItemsCount: customers.length,
+      totalItemsCount: totalCustomers,
     });
   } catch (error) {
     console.log(error);

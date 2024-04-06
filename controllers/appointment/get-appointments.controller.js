@@ -33,12 +33,20 @@ async function getAppointments(req, res) {
       });
     }
 
+    const totalAppointments = await Appointment.countDocuments();
+
+    if (!totalAppointments) {
+      return res.status(404).json({ message: "😥 Appointments not found!!" });
+    }
+
     return res.status(200).json({
       message: "🎉 Appointments fetched successfully!!",
       data: appointments,
       itemsPerPage: req.query.itemsPerPage || 10,
       page: req.query.page || 1,
-      totalItemsCount: appointments.length,
+      totalItemsCount: !req.query.search
+        ? totalAppointments
+        : appointments.length,
     });
   } catch (error) {
     console.log(error);
